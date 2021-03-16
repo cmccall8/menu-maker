@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Lato&family=Open+Sans&family=Staatliches&display=swap" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/9d5c97f860.js" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		
+		<div id="app">
+			<h1>Menu Maker App</h1>
+			
+
+			<div class="options" v-if="front_facing_menu">
+			<button v-on:click="mainDashMode">EDIT MENU</button>
+			</div>
+
+
+			<div class="options" v-if="main_dash_mode">
+				<button v-on:click="frontFacingView">BACK TO MENU</button>
+			</div>
+
+
+			<div class="add_new_item" v-if="add_new_mode">
+				<h2>NEW MENU ITEM</h2>
+				<div class="add_item_form">
+				<input type="text" v-model="item_name" placeholder="ITEM NAME">
+				ITEM DESCRIPTION: <textarea rows="10" v-model="item_description"></textarea>
+				CATEGORY: <select v-model="item_type">
+					<option value="appetizer">Appetizer</option>
+					<option value="entree">Entree</option>
+					<option value="side">Side</option>
+					<option value="drink">Drink</option>
+					<option value="dessert">Dessert</option>
+				</select>
+				<input type="text" v-model="item_price" placeholder="PRICE">
+				<button class="secondary-button-sm" v-on:click="mainDashMode">CANCEL</button>
+				<button v-on:click="submitNewMenuItem" class="action-button-sm">CREATE</button>
+				</div>
+			</div>
+
+			<div class="admin_menu_list" v-if="main_dash_mode">
+				
+				<div class="all_menu_header">
+				<h2>ALL MENU ITEMS</h2>
+				<button v-on:click="newMenuItemMode">ADD NEW ITEM</button>
+				</div>
+
+				<h3>APPETIZERS</h3>
+				<div v-for="item in menu_items" class="item_row">
+					
+					<p v-if="item.type == 'appetizer' && edit_mode != item._id">{{ item.name }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'appetizer'">NAME:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'appetizer'" v-model="item.name">
+
+					<p v-if="item.type == 'appetizer' && edit_mode != item._id">{{ item.description }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'appetizer'">DESCRIPTION:</span>
+					<textarea v-if="edit_mode == item._id && item.type == 'appetizer'" v-model="item.description"></textarea>
+
+					<p v-if="item.type == 'appetizer' && edit_mode != item._id">{{ item.price }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'appetizer'">PRICE:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'appetizer'" v-model="item.price">
+
+					<span v-if="edit_mode == item._id && item.type == 'appetizer'">CATEGORY:</span>
+					<select v-if="edit_mode == item._id && item.type == 'appetizer'" v-model="item.type">
+						<option value="appetizer">Appetizer</option>
+						<option value="entree">Entree</option>
+						<option value="side">Side</option>
+						<option value="drink">Drink</option>
+						<option value="dessert">Dessert</option>
+					</select>
+					<div class="icons">
+					<i class="fas fa-edit" v-on:click="editMenuItem(item._id)"></i>	
+					<i class="fas fa-trash" v-on:click="deleteItem(item)"></i>
+					</div>
+					<button v-on:click="updateMenuItem(item)" v-if="edit_mode == item._id && item.type == 'appetizer'" class="action-button-sm">SAVE</button>
+				</div>
+
+				<h3>ENTREES</h3>
+				<div v-for="item in menu_items" class="item_row">
+					
+					<p v-if="item.type == 'entree' && edit_mode != item._id">{{ item.name }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'entree'">NAME:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'entree'" v-model="item.name">
+
+					<p v-if="item.type == 'entree' && edit_mode != item._id">{{ item.description }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'entree'">DESCRIPTION:</span>
+					<textarea v-if="edit_mode == item._id && item.type == 'entree'" v-model="item.description"></textarea>
+
+					<p v-if="item.type == 'entree' && edit_mode != item._id">{{ item.price }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'entree'">PRICE:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'entree'" v-model="item.price">
+
+					
+					<span v-if="edit_mode == item._id && item.type == 'entree'">CATEGORY:</span>
+					<select v-if="edit_mode == item._id && item.type == 'entree'" v-model="item.type">
+						<option value="appetizer">Appetizer</option>
+						<option value="entree">Entree</option>
+						<option value="side">Side</option>
+						<option value="drink">Drink</option>
+						<option value="dessert">Dessert</option>
+					</select>	
+
+					<div class="icons">
+					<i class="fas fa-edit" v-on:click="editMenuItem(item._id)"></i>
+					<i class="fas fa-trash" v-on:click="deleteItem(item)"></i>
+					</div>
+					<button v-on:click="updateMenuItem(item)" v-if="edit_mode == item._id && item.type == 'entree'" class="action-button-sm">SAVE</button>
+				</div>
+
+				<h3>SIDES</h3>
+				<div v-for="item in menu_items" class="item_row">
+					
+					<p v-if="item.type == 'side' && edit_mode != item._id">{{ item.name }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'side'">NAME:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'side'" v-model="item.name">
+
+					<p v-if="item.type == 'side' && edit_mode != item._id">{{ item.description }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'side'">DESCRIPTION:</span>
+					<textarea v-if="edit_mode == item._id && item.type == 'side'" v-model="item.description"></textarea>	
+
+					<p v-if="item.type == 'side' && edit_mode != item._id">{{ item.price }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'side'">PRICE:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'side'" v-model="item.price">
+
+					
+					<span v-if="edit_mode == item._id && item.type == 'side'">CATEGORY:</span>
+					<select v-if="edit_mode == item._id && item.type == 'side'" v-model="item.type">
+						<option value="appetizer">Appetizer</option>
+						<option value="entree">Entree</option>
+						<option value="side">Side</option>
+						<option value="drink">Drink</option>
+						<option value="dessert">Dessert</option>
+					</select>
+
+					<div class="icons">
+					<i class="fas fa-edit" v-on:click="editMenuItem(item._id)"></i>
+					<i class="fas fa-trash" v-on:click="deleteItem(item)"></i>
+					</div>
+					<button v-on:click="updateMenuItem(item)" v-if="edit_mode == item._id && item.type == 'side'" class="action-button-sm">SAVE</button>
+				</div>
+
+				<h3>DRINKS</h3>
+				<div v-for="item in menu_items" class="item_row">
+					
+					<p v-if="item.type == 'drink' && edit_mode != item._id">{{ item.name }}</p>
+
+					<span v-if="edit_mode == item._id && item.type == 'drink'">NAME:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'drink'" v-model="item.name">
+
+					<p v-if="item.type == 'drink' && edit_mode != item._id">{{ item.description }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'drink'">DESCRIPTION:</span>
+					<textarea v-if="edit_mode == item._id && item.type == 'drink'" v-model="item.description">{{ item.description }}</textarea>
+
+					<p v-if="item.type == 'drink' && edit_mode != item._id">{{ item.price }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'drink'">PRICE:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'drink'" v-model="item.price">
+
+					
+					<span v-if="edit_mode == item._id && item.type == 'drink'">CATEGORY:</span>
+					<select v-if="edit_mode == item._id && item.type == 'drink'" v-model="item.type">
+						<option value="appetizer">Appetizer</option>
+						<option value="entree">Entree</option>
+						<option value="side">Side</option>
+						<option value="drink">Drink</option>
+						<option value="dessert">Dessert</option>
+					</select>	
+
+					<div class="icons">
+					<i class="fas fa-edit" v-on:click="editMenuItem(item._id)"></i>
+					<i class="fas fa-trash" v-on:click="deleteItem(item)"></i>
+					</div>
+
+					<button v-on:click="updateMenuItem(item)" v-if="edit_mode == item._id && item.type == 'drink'" class="action-button-sm">SAVE</button>
+				</div>
+
+				<h3>DESSERTS</h3>
+				<div v-for="item in menu_items" class="item_row">
+					
+					<p v-if="item.type == 'dessert' && edit_mode != item._id">{{ item.name }}</p>
+
+					<span v-if="edit_mode == item._id && item.type == 'dessert'">NAME:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'dessert'" v-mdoel="item.name">
+
+					<p v-if="item.type == 'dessert' && edit_mode != item._id">{{ item.description }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'dessert'">DESCRIPTION:</span>
+					<textarea v-if="edit_mode == item._id && item.type == 'dessert'" v-model="item.description"></textarea>	
+
+					<p v-if="item.type == 'dessert' && edit_mode != item._id">{{ item.price }}</p>
+					
+					<span v-if="edit_mode == item._id && item.type == 'dessert'">PRICE:</span>
+					<input type="text" v-if="edit_mode == item._id && item.type == 'dessert'" v-model="item.price">
+
+					<span v-if="edit_mode == item._id && item.type == 'dessert'">CATEGORY:</span>
+					<select v-if="edit_mode == item._id && item.type == 'dessert'" v-model="item.type">
+						<option value="appetizer">Appetizer</option>
+						<option value="entree">Entree</option>
+						<option value="side">Side</option>
+						<option value="drink">Drink</option>
+						<option value="dessert">Dessert</option>
+					</select>	
+
+					<div class="icons">
+					<i class="fas fa-edit" v-on:click="editMenuItem(item._id)"></i>
+					<i class="fas fa-trash" v-on:click="deleteItem(item)"></i>
+					</div>
+
+					<button v-on:click="updateMenuItem(item)" v-if="edit_mode == item._id && item.type == 'dessert'" class="action-button-sm">SAVE</button>
+				</div>
+
+			</div>
+
+			<div class="formatted_menu" v-if="front_facing_menu">
+				<h2>OUR RESTAURANT MENU</h2>
+
+				<h3>APPETIZERS:</h3>
+				<div v-for="item in menu_items" class="item_card" v-if="item.type == 'appetizer'">
+					<h5>{{ item.name }}</h5>
+					<p>{{ item.description }}</p>
+					<p >{{ item.price }}</p>
+				</div>
+		
+				<h3>ENTREES:</h3>
+				<div v-for="item in menu_items" class="item_card" v-if="item.type == 'entree'">
+					<h5>{{ item.name }}</h5>
+					<p>{{ item.description }}</p>
+					<p>{{ item.price }}</p>
+				</div>
+
+				<h3>SIDES:</h3>
+				<div v-for="item in menu_items" class="item_card" v-if="item.type == 'side'">
+					<h5>{{ item.name }}</h5>
+					<p>{{ item.description }}</p>
+					<p>{{ item.price }}</p>
+				</div>
+
+				<h3>DRINKS:</h3>
+				<div v-for="item in menu_items" class="item_card" v-if="item.type == 'drink'">
+					<h5>{{ item.name }}</h5>
+					<p>{{ item.description }}</p>
+					<p>{{ item.price }}</p>
+				</div>
+
+				<h3>DESSERTS:</h3>
+				<div v-for="item in menu_items" class="item_card" v-if="item.type == 'dessert'">
+					<h5>{{ item.name }}</h5>
+					<p>{{ item.description }}</p>
+					<p>{{ item.price }}</p>
+				</div>
+
+			</div>
+
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+		<script type="text/javascript" src="app.js"></script>
+	</body>
+</html>
