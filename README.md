@@ -33,3 +33,5 @@ price:
 3. PUT /menuitems/id
 
 4. DELETE /menuitems/id
+
+<img src="design/mm-screen1.png"/>
