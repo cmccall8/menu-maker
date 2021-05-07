@@ -34,4 +34,6 @@ price:
 
 4. DELETE /menuitems/id
 
-<img src="design/mm-screen1.png"/>
+<img src="mm-screen1.png"/>
+<img src="mm-screen2.png"/>
+<img src="mm-screen3.png"/>
